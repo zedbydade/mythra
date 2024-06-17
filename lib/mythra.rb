@@ -1,5 +1,5 @@
-class Mythra 
-  def tu 
-    "tu-ru"
+class Mythra
+  def tu
+    'tu-ru'
   end
 end
