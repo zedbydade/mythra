@@ -26,7 +26,7 @@ class Memory
             save(@path, @map) if @atomic_bool.true?
             @atomic_bool.make_false
           end
-          s.take(@stop_channel) { break }
+          s.take(@stop_channel) { exit }
         end
       end
       # rubocop:enable Lint/UnreachableLoop
