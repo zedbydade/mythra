@@ -23,7 +23,7 @@ class TestName < Minitest::Test
 
   def test_stop_channel
     @memory_db.call
-    @memory_db.stop_channel.put 'STOP'
+    @memory_db.stop
     assert_equal false, @memory_db.handler.alive?
   end
 end

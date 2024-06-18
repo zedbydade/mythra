@@ -33,6 +33,14 @@ class Memory
     end
   end
 
+  def stop
+    @stop_channel.send 'STOP'
+
+    p 'storage shut down'
+    p 'storage statics:'
+    p "total entries: #{@map.length}"
+  end
+
   private
 
   def save(location, map)
