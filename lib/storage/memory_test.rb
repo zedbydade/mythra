@@ -22,8 +22,12 @@ class TestName < Minitest::Test
   end
 
   def test_stop_channel
+    @memory_db.atomic_bool.make_true
+    @memory_db.map = 'TU-TU-TEST\nTU-TU-TEST'
     @memory_db.call
-    @memory_db.stop
+    sleep(0.5)
+    entries = @memory_db.stop
     assert_equal false, @memory_db.handler.alive?
+    assert_equal 'total entries: 2', entries
   end
 end
