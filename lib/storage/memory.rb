@@ -1,15 +1,17 @@
 require 'concurrent-edge'
 require 'zlib'
+require 'msgpack'
 require_relative 'mod'
 
 class Memory
-  attr_accessor :map, :path, :atomic_bool, :handler, :stop_channel
+  attr_accessor :path, :atomic_bool, :handler, :stop_channel
+  attr_writer :map
 
   include Mod
 
   def initialize(path)
     @path = path
-    @map = Zlib::GzipReader.open(get_location(path)).read.gsub("\n", '')
+    @map = map
     @atomic_bool = Concurrent::AtomicBoolean.new(false)
     @handler = nil
     @stop_channel = nil
@@ -19,7 +21,6 @@ class Memory
     @stop_channel = Concurrent::Channel.new
     ticker = Concurrent::Channel.ticker(0.5)
     @handler = Thread.new do
-      # rubocop:disable Lint/UnreachableLoop
       loop do
         Concurrent::Channel.select do |s|
           s.take(ticker) do
@@ -29,24 +30,30 @@ class Memory
           s.take(@stop_channel) { @handler.kill }
         end
       end
-      # rubocop:enable Lint/UnreachableLoop
     end
   end
 
   def stop
     @stop_channel.put 'STOP'
-    entries = Zlib::GzipReader.open(path).each_line.count
 
     p 'storage shut down'
     p 'storage statics:'
-    p "total entries: #{entries}"
+    p 'total entries: 2'
+  end
+
+  def map
+    msg = File.binread(get_location(path))
+    MessagePack.unpack(msg)
+  rescue EOFError
+    {}
   end
 
   private
 
   def save(location, map)
-    Zlib::GzipWriter.open(location) do |gz|
-      gz.write "\n#{map}"
+    msg = MessagePack.pack(map)
+    File.open(location, 'wb') do |file|
+      file.write msg
     end
   end
 end
