@@ -11,7 +11,7 @@ class Memory
 
   def initialize(path)
     @path = path
-    @map = map
+    @map = read_map
     @atomic_bool = Concurrent::AtomicBoolean.new(false)
     @handler = nil
     @stop_channel = nil
@@ -41,7 +41,7 @@ class Memory
     p 'total entries: 2'
   end
 
-  def map
+  def read_map
     msg = File.binread(get_location(path))
     MessagePack.unpack(msg)
   rescue EOFError
@@ -51,7 +51,14 @@ class Memory
   private
 
   def save(location, map)
-    msg = MessagePack.pack(map)
+    existed_map = read_map
+    existed_keys = read_map.keys & map.keys
+
+    existed_keys.each do |key|
+      map[key] = existed_map[key] + map[key]
+    end
+
+    msg = MessagePack.pack(existed_map.merge(map))
     File.open(location, 'wb') do |file|
       file.write msg
     end
