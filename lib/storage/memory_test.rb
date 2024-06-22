@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'time'
 require_relative './memory'
 
 class TestName < Minitest::Test
@@ -16,15 +17,12 @@ class TestName < Minitest::Test
   end
 
   def test_map
+    time = Time.now.to_s
     @memory_db.atomic_bool.make_true
-    @memory_db.map = { 'hash' => ['value'] }
+    @memory_db.map = { '31.127.94.124' => { until: time } }
     @memory_db.call
     sleep(1)
-    assert_equal({ 'hash' => ['value'] }, @memory_db.read_map)
-    @memory_db.map = { 'hash' => ['value2'], 'hash2' => ['value'] }
-    @memory_db.atomic_bool.make_true
-    sleep(1)
-    assert_equal({ 'hash' => %w[value value2], 'hash2' => ['value'] }, @memory_db.read_map)
+    assert_equal({ '31.127.94.124' => { 'until' => time } }, @memory_db.read_map)
     assert_equal false, @memory_db.atomic_bool.true?
     @memory_db.stop
   end

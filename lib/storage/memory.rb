@@ -51,14 +51,7 @@ class Memory
   private
 
   def save(location, map)
-    existed_map = read_map
-    existed_keys = read_map.keys & map.keys
-
-    existed_keys.each do |key|
-      map[key] = existed_map[key] + map[key]
-    end
-
-    msg = MessagePack.pack(existed_map.merge(map))
+    msg = MessagePack.pack(map)
     File.open(location, 'wb') do |file|
       file.write msg
     end
