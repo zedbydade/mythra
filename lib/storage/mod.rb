@@ -2,14 +2,17 @@ require 'pathname'
 require_relative 'memory'
 
 module Mod
-  def upsert(ip:, expire_until:, memory:)
+  def upsert(ip:, expire_at:, memory:)
     map = memory.read_map
 
-    memory.map = if map[ip]
-                   map[ip]['until'] = expire_until
-                 else
-                   map[ip] = { 'until' => expire_until, times: 0 }
-                 end
+    map[ip] = if map[ip]
+                map[ip]['until'] = expire_at
+                map[ip]['times'] += 1
+                map[ip]
+              else
+                map[ip] = { 'until' => expire_at, times: 1 }
+              end
+    memory.map = map
   end
 
   def get_location(path)

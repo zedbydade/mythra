@@ -2,7 +2,7 @@ require 'minitest/autorun'
 require 'time'
 require_relative './memory'
 
-class TestName < Minitest::Test
+class MemoryTest < Minitest::Test
   def setup
     path = Pathname.new('./var/test/test.bin')
     FileUtils.mkdir_p(path.dirname)
