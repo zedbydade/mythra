@@ -28,11 +28,12 @@ class MemoryTest < Minitest::Test
   end
 
   def test_stop_channel
+    @memory_db.map = { '31.127.94.124' => { until: Time.now.to_s } }
     @memory_db.atomic_bool.make_true
     @memory_db.call
     sleep(1)
     entries = @memory_db.stop
     assert_equal false, @memory_db.handler.alive?
-    assert_equal 'total entries: 2', entries
+    assert_equal 'total entries: 1', entries
   end
 end

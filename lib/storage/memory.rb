@@ -38,7 +38,7 @@ class Memory
 
     p 'storage shut down'
     p 'storage statics:'
-    p 'total entries: 2'
+    p "total entries: #{read_map.keys.count}"
   end
 
   def read_map
