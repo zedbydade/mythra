@@ -14,18 +14,31 @@ class ModTest < Minitest::Test
     @memory_db = Memory.new(path)
   end
 
+  def test_remove
+    @memory_db.atomic_bool.make_true
+    @memory_db.call
+    ip = '218.121.210.113'
+    expire_at = Time.now.to_s
+    upsert(ip:, expire_at:, memory: @memory_db)
+    sleep(0.5)
+    remove(ip:, memory: @memory_db)
+    @memory_db.atomic_bool.make_true
+    sleep(0.5)
+    assert_equal({}, @memory_db.read_map)
+  end
+
   def test_double_upsert
     @memory_db.atomic_bool.make_true
     @memory_db.call
     ip = '218.121.210.113'
     expire_at = Time.now.to_s
     upsert(ip:, expire_at:, memory: @memory_db)
-    sleep(1)
+    sleep(0.5)
     expire_at2 = Time.now.to_s
     ip2 = '217.121.210.113'
     upsert(ip: ip2, expire_at: expire_at2, memory: @memory_db)
     @memory_db.atomic_bool.make_true
-    sleep(1)
+    sleep(0.5)
     assert_equal({ ip => { 'until' => expire_at, 'times' => 1 }, ip2 => { 'until' => expire_at2, 'times' => 1 } },
                  @memory_db.read_map)
   end

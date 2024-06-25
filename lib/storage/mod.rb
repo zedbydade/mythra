@@ -15,6 +15,12 @@ module Mod
     memory.map = map
   end
 
+  def remove(ip:, memory:)
+    map = memory.read_map
+    map.delete(ip)
+    memory.map = map
+  end
+
   def get_location(path)
     return path if path.is_a? Pathname
 
