@@ -23,7 +23,15 @@ module Mod
 
   def iter_active(memory:, &block)
     map = memory.read_map.select do |_, hash|
-      hash["until"] > Time.now.to_i
+      hash['until'] > Time.now.to_i
+    end
+    map.each(&block)
+    memory.map = map
+  end
+
+  def iter_outdated(memory:, &block)
+    map = memory.read_map.select do |_, hash|
+      hash['until'] < Time.now.to_i
     end
     map.each(&block)
     memory.map = map

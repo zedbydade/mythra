@@ -57,4 +57,19 @@ class ModTest < Minitest::Test
     sleep(0.5)
     assert_equal({ ip => { 'until' => expire_at.to_i, 'times' => 100 } }, @memory_db.read_map)
   end
+
+  def test_iter_outdated
+    @memory_db.atomic_bool.make_true
+    @memory_db.call
+    ip = '218.121.210.113'
+    expire_at = Time.now - 3600
+    upsert(ip:, expire_at:, memory: @memory_db)
+    sleep(0.5)
+    iter_outdated(memory: @memory_db) do |_, value|
+      value['times'] = 100
+    end
+    @memory_db.atomic_bool.make_true
+    sleep(0.5)
+    assert_equal({ ip => { 'until' => expire_at.to_i, 'times' => 100 } }, @memory_db.read_map)
+  end
 end
