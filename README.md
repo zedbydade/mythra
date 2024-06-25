@@ -1,21 +1,10 @@
-# Mythra
+# Mythra: A Ruby Key/Value Database
 
-**TODO: Add description**
+## Overview
+Mythra is a highly-concurrent key/value database implemented in Ruby, leveraging the `concurrent-ruby` gem for thread safety and efficient parallel processing. Designed with a focus on testability and robustness, Mythra offers a solid foundation for applications requiring fast and reliable file data storage solutions.
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `mythra` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:mythra, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/mythra>.
-
+## Features
+- **Thread Safety:** Built with `concurrent-ruby`, Mythra ensures that data access and mutations are thread-safe, allowing for high concurrency.
+- **100% Test Coverage:** Fully tested to guarantee reliability and stability.
+- **Simple API:** Easy-to-use interfaces for storing and retrieving data.
+- **Memory Efficient:** Optimized for minimal memory footprint while maintaining speed.
